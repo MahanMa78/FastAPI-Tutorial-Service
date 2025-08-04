@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 # import uvicorn
-
+import random
 app = FastAPI()
 
 
@@ -38,3 +38,12 @@ def retrieve_name_detail(name_id:int):
             return name
     
     return {"detail" : "object not found    "}
+
+
+@app.post("/names")
+def create_name(name:str):
+    
+    name_obj = {"id" : random.randint(6,101) , "name" : name}
+    names_list.append(name_obj)
+    
+    return name_obj
