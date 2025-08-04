@@ -47,3 +47,14 @@ def create_name(name:str):
     names_list.append(name_obj)
     
     return name_obj
+
+
+
+@app.put("/names/{name_id}")
+def update_name_detail(name_id:int , name:str):
+    for item in names_list:
+        if item["id"] == name_id:
+            item['name'] = name
+            return item
+        
+    return {"detail" : "object not found"}
