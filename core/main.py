@@ -58,3 +58,13 @@ def update_name_detail(name_id:int , name:str):
             return item
         
     return {"detail" : "object not found"}
+
+
+@app.delete("/names/{name_id}")
+def delete_name(name_id:int) :
+    for item in names_list:
+        if item["id"] == name_id:
+            names_list.remove(item)
+            return {"detail" : "object deleted successfully!"}
+        
+    return {"detail" : "object not found"}
