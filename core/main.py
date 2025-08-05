@@ -33,7 +33,7 @@ def root():
 
 
 @app.get("/names")
-def retrieve_names_list(q:str | None = Query(default=None , max_length=50)): 
+def retrieve_names_list(q:str | None = Query(deprecated=True, alias="search",description="it will be searched with the title you provided",example="mahan", default=None , max_length=50)): 
     #model1 :: q:str | None = None---->in ghesmate None = None ro baraye in gozashtim ke age parametri ro nakhastim befrestim barash betone kole list ro bargardone
     #model2 :: q:Optional[str] = None
     #model3 :: q:Annotated[str | None , Query(max_length=50)] = None
