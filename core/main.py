@@ -1,4 +1,4 @@
-from fastapi import FastAPI , Query ,status , HTTPException , Path , Form
+from fastapi import FastAPI , Query ,status , HTTPException , Path , Form , Body
 # import uvicorn
 from typing import Annotated ,Optional
 from fastapi.responses import JSONResponse
@@ -64,8 +64,8 @@ def retrieve_name_detail(name_id:int = Path(alias="object id",title="object id "
 
 
 @app.post("/names" , status_code=status.HTTP_201_CREATED)
-def create_name(name:str = Form()):
-    
+def create_name(name:str = Body(embed=True)):
+    # agar az Body(embed=True) form estefadeh konim on vaght bayad be sorat jason befrestim , dar kol bishtar az Body estefadeh mishe nesbate be Form
     name_obj = {"id" : random.randint(6,101) , "name" : name}
     names_list.append(name_obj)
     
