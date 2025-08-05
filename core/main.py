@@ -1,6 +1,7 @@
 from fastapi import FastAPI , Query ,status , HTTPException
 # import uvicorn
 from typing import Annotated ,Optional
+from fastapi.responses import JSONResponse
 import random
 app = FastAPI()
 
@@ -19,7 +20,8 @@ names_list = [
 
 @app.get('/')
 def root():
-    return {"message" : "Hello, World!"}
+    content = {"message" : "Hello, World!"}
+    return JSONResponse(content=content , status_code=status.HTTP_202_ACCEPTED)
 
 
 # *
@@ -80,11 +82,11 @@ def update_name_detail(name_id:int , name:str):
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="object not found")
 
 
-@app.delete("/names/{name_id}" ,  status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/names/{name_id}" )
 def delete_name(name_id:int) :
     for item in names_list:
         if item["id"] == name_id:
             names_list.remove(item)
-            return {"detail" : "object deleted successfully!"}
+            return  JSONResponse(content={"detail" : "object removed successfully!"} , status_code=status.HTTP_200_OK) #agar 204 bashe be ma message ro neshon nmide
         
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="object not found")
