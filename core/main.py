@@ -1,4 +1,5 @@
-from fastapi import FastAPI , Query ,status , HTTPException , Path , Form , Body
+from fastapi import FastAPI, File , Query ,status , HTTPException , Path , Form , Body , UploadFile 
+from typing import List
 # import uvicorn
 from typing import Annotated ,Optional
 from fastapi.responses import JSONResponse
@@ -91,3 +92,24 @@ def delete_name(name_id:int) :
             return  JSONResponse(content={"detail" : "object removed successfully!"} , status_code=status.HTTP_200_OK) #agar 204 bashe be ma message ro neshon nmide
         
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="object not found")
+
+
+# !yek ravesh baraye upload file
+# @app.post("/upload_file/")
+# async def upload_file(file: bytes=File()):
+#     print(file)
+#     return {"file_size" : len(file)}
+
+@app.post("/upload_file/")
+async def upload_file(file : UploadFile = File()):
+    content = await file.read() 
+    print(file.__dict__)
+    return {"filename" : file.filename , "content_type" : file.content_type , "file_size" : len(content)}
+
+
+@app.post("/upload-multiple/")
+async def upload_multiple(files: List[UploadFile]):
+    return [
+        {"firstname" : file.filename , "content_type" : file.content_type}
+        for file in files
+    ]
