@@ -1,4 +1,4 @@
-from fastapi import FastAPI , Query ,status , HTTPException
+from fastapi import FastAPI , Query ,status , HTTPException , Path
 # import uvicorn
 from typing import Annotated ,Optional
 from fastapi.responses import JSONResponse
@@ -54,7 +54,7 @@ def retrieve_names_list(q:str | None = Query(deprecated=True, alias="search",des
 
 
 @app.get("/names/{name_id}")
-def retrieve_name_detail(name_id:int):
+def retrieve_name_detail(name_id:int = Path(alias="object id",title="object id ",description="the id of the name in names_list")):
     for name in names_list:
         if name["id"] == name_id:
             return name
