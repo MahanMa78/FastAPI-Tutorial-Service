@@ -1,10 +1,21 @@
 from fastapi import FastAPI, File , Query ,status , HTTPException , Path , Form , Body , UploadFile 
 from typing import List
-# import uvicorn
 from typing import Annotated ,Optional
 from fastapi.responses import JSONResponse
 import random
-app = FastAPI()
+from contextlib import asynccontextmanager
+
+# import uvicorn
+
+@asynccontextmanager
+async def lifespan(app:FastAPI):
+    print("apllication startup")
+    yield #miad aval print ro anjam mide baad mire donbal edameh barname va dobare moghe payane barname khat painisho chap mikone
+    print("application shutdown")
+
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 names_list = [
