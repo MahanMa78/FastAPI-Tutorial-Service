@@ -1,4 +1,4 @@
-from fastapi import FastAPI , Query ,status , HTTPException , Path
+from fastapi import FastAPI , Query ,status , HTTPException , Path , Form
 # import uvicorn
 from typing import Annotated ,Optional
 from fastapi.responses import JSONResponse
@@ -55,6 +55,7 @@ def retrieve_names_list(q:str | None = Query(deprecated=True, alias="search",des
 
 @app.get("/names/{name_id}")
 def retrieve_name_detail(name_id:int = Path(alias="object id",title="object id ",description="the id of the name in names_list")):
+    # vaghti ke ma mosavi(=) mizarim darim migim ke hoviate on chi hast
     for name in names_list:
         if name["id"] == name_id:
             return name
@@ -63,7 +64,7 @@ def retrieve_name_detail(name_id:int = Path(alias="object id",title="object id "
 
 
 @app.post("/names" , status_code=status.HTTP_201_CREATED)
-def create_name(name:str):
+def create_name(name:str = Form()):
     
     name_obj = {"id" : random.randint(6,101) , "name" : name}
     names_list.append(name_obj)
@@ -73,7 +74,7 @@ def create_name(name:str):
 
 
 @app.put("/names/{name_id}" , status_code=status.HTTP_200_OK)
-def update_name_detail(name_id:int , name:str):
+def update_name_detail(name_id:int =Path() , name:str = Form()):
     for item in names_list:
         if item["id"] == name_id:
             item['name'] = name
