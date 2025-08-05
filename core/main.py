@@ -1,4 +1,4 @@
-from fastapi import FastAPI , Query
+from fastapi import FastAPI , Query ,status , HTTPException
 # import uvicorn
 from typing import Annotated ,Optional
 import random
@@ -57,10 +57,10 @@ def retrieve_name_detail(name_id:int):
         if name["id"] == name_id:
             return name
     
-    return {"detail" : "object not found    "}
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="object not found")
 
 
-@app.post("/names")
+@app.post("/names" , status_code=status.HTTP_201_CREATED)
 def create_name(name:str):
     
     name_obj = {"id" : random.randint(6,101) , "name" : name}
@@ -70,21 +70,21 @@ def create_name(name:str):
 
 
 
-@app.put("/names/{name_id}")
+@app.put("/names/{name_id}" , status_code=status.HTTP_200_OK)
 def update_name_detail(name_id:int , name:str):
     for item in names_list:
         if item["id"] == name_id:
             item['name'] = name
             return item
         
-    return {"detail" : "object not found"}
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="object not found")
 
 
-@app.delete("/names/{name_id}")
+@app.delete("/names/{name_id}" ,  status_code=status.HTTP_204_NO_CONTENT)
 def delete_name(name_id:int) :
     for item in names_list:
         if item["id"] == name_id:
             names_list.remove(item)
             return {"detail" : "object deleted successfully!"}
         
-    return {"detail" : "object not found"}
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="object not found")
