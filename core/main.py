@@ -1,9 +1,10 @@
+import random
 from fastapi import FastAPI, File , Query ,status , HTTPException , Path , Form , Body , UploadFile 
 from typing import List
 from typing import Annotated ,Optional
 from fastapi.responses import JSONResponse
-import random
 from contextlib import asynccontextmanager
+from dataclasses import dataclass
 
 # import uvicorn
 
@@ -75,10 +76,22 @@ def retrieve_name_detail(name_id:int = Path(alias="object id",title="object id "
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="object not found")
 
 
-@app.post("/names" , status_code=status.HTTP_201_CREATED)
-def create_name(name:str = Body(embed=True)):
+@dataclass
+class Student:
+    name :str
+    age:int
+@dataclass
+class StudentResponse:
+    id:int
+    name :str
+    
+
+
+@app.post("/names" , status_code=status.HTTP_201_CREATED , response_model=StudentResponse)
+# def create_name(name :str = Body(embed=True)):
+def create_name(student: Student):
     # agar az Body(embed=True) form estefadeh konim on vaght bayad be sorat jason befrestim , dar kol bishtar az Body estefadeh mishe nesbate be Form
-    name_obj = {"id" : random.randint(6,101) , "name" : name}
+    name_obj = {"id" : random.randint(6,101) , "name" : student.name}
     names_list.append(name_obj)
     
     return name_obj
