@@ -5,7 +5,8 @@ from typing import Annotated ,Optional
 from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
-
+from schemas import PersonCreateSchema , PersonResponseSchema , PersonUpdateSchema
+from typing import List
 # import uvicorn
 
 @asynccontextmanager
@@ -45,7 +46,7 @@ def root():
 
 
 
-@app.get("/names")
+@app.get("/names" , response_model = List[PersonResponseSchema]) #zamani ke ye response model ba objective list darim bayad hatman az response model list estefaeh koinm , az [] estefadeh koinm
 def retrieve_names_list(q:str | None = Query(deprecated=True, alias="search",description="it will be searched with the title you provided",example="mahan", default=None , max_length=50)): 
     #model1 :: q:str | None = None---->in ghesmate None = None ro baraye in gozashtim ke age parametri ro nakhastim befrestim barash betone kole list ro bargardone
     #model2 :: q:Optional[str] = None
@@ -66,8 +67,8 @@ def retrieve_names_list(q:str | None = Query(deprecated=True, alias="search",des
 #     return names_list
 
 
-@app.get("/names/{name_id}")
-def retrieve_name_detail(name_id:int = Path(alias="object id",title="object id ",description="the id of the name in names_list")):
+@app.get("/names/{name_id}" , response_model = PersonResponseSchema) #dar inja list nist chon darim detal daryaft mikonim 
+def retrieve_name_detail(name_id:int = Path(title="object id ",description="the id of the name in names_list")):
     # vaghti ke ma mosavi(=) mizarim darim migim ke hoviate on chi hast
     for name in names_list:
         if name["id"] == name_id:
@@ -87,22 +88,23 @@ class StudentResponse:
     
 
 
-@app.post("/names" , status_code=status.HTTP_201_CREATED , response_model=StudentResponse)
+@app.post("/names" , status_code=status.HTTP_201_CREATED , response_model=PersonResponseSchema)
 # def create_name(name :str = Body(embed=True)):
-def create_name(student: Student):
+# def create_name(student: Student):
+def create_name(person:PersonCreateSchema):
     # agar az Body(embed=True) form estefadeh konim on vaght bayad be sorat jason befrestim , dar kol bishtar az Body estefadeh mishe nesbate be Form
-    name_obj = {"id" : random.randint(6,101) , "name" : student.name}
+    name_obj = {"id" : random.randint(6,101) , "name" : person.name}
     names_list.append(name_obj)
     
     return name_obj
 
 
 
-@app.put("/names/{name_id}" , status_code=status.HTTP_200_OK)
-def update_name_detail(name_id:int =Path() , name:str = Form()):
+@app.put("/names/{name_id}" , status_code=status.HTTP_200_OK , response_model =PersonResponseSchema)
+def update_name_detail(person : PersonUpdateSchema , name_id:int =Path() ):
     for item in names_list:
         if item["id"] == name_id:
-            item['name'] = name
+            item['name'] = person.name
             return item
         
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="object not found")
